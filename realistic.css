@@ -1,0 +1,21 @@
+/* REALISTIC TRAFFIC RACER UI — replaces the old neon/synthwave presentation */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
+html,body{background:#172027!important;color:#f4f5f6!important;font-family:Inter,Arial,sans-serif!important}
+body{background:linear-gradient(#91b6cf,#d9e2e6 55%,#66705f)!important}
+.menu-panel{background:rgba(28,34,37,.96)!important;border:1px solid #7f8b91!important;border-radius:10px!important;box-shadow:0 12px 40px rgba(0,0,0,.35)!important;backdrop-filter:blur(6px)!important}
+.game-title{color:#f4f5f6!important;text-shadow:0 2px 8px rgba(0,0,0,.55)!important;animation:none!important;letter-spacing:2px!important}
+.game-subtitle{color:#c8d0d4!important;text-shadow:none!important;letter-spacing:2px!important}
+.btn{background:#343c41!important;border:1px solid #68757c!important;box-shadow:none!important;text-shadow:none!important;border-radius:5px!important}
+.btn:hover:not(:disabled){background:#4b565d!important;box-shadow:none!important;transform:translateY(-1px)!important}
+.btn-primary,.btn-secondary,.btn-accent{background:#3e4a50!important;border-color:#8f9ba1!important}
+.currency-display{color:#f3d27a!important;border-color:#7d7460!important;text-shadow:none!important}
+.missions-preview{border-color:#69757b!important;background:rgba(0,0,0,.25)!important}
+.missions-preview h3{color:#d2d8db!important}
+.progress-bar{background:#8e9ba1!important;box-shadow:none!important}
+.tab-btn{border-color:#68757c!important}.tab-btn.active{background:#4b565d!important;box-shadow:none!important}
+/* Kill neon colors in HUD */
+.hud-item,.hud-value,.hud-label,.hud-mission-alert{ text-shadow:0 1px 4px #000!important }
+/* Natural touch controls */
+.touch-btn{box-shadow:0 3px 8px rgba(0,0,0,.35)!important;filter:none!important}
+/* Keep the 3D canvas natural and prevent the UI from changing the renderer */
+#canvas-container canvas{outline:none}
