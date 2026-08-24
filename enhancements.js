@@ -161,6 +161,33 @@
             game.showToast(`CONTROLLER ${event.gamepad.index + 1} CONNECTED`);
         });
 
+        // Disable the browser initials popup when a new local high score is made.
+        // Scores are still saved to the leaderboard automatically as "PILOT".
+        game.saveNewHighScore = function(finalScore) {
+            let scores = [];
+            const localScores = localStorage.getItem('neon_highscores');
+            if (localScores) {
+                try { scores = JSON.parse(localScores); } catch (e) {}
+            }
+
+            const mapNames = {
+                highway: 'Highway',
+                city: 'Neon City',
+                mountain: 'Mountain',
+                desert: 'Desert'
+            };
+
+            scores.push({
+                name: 'PILOT',
+                score: finalScore,
+                map: mapNames[game.currentMap] || 'Highway'
+            });
+
+            scores.sort((a, b) => b.score - a.score);
+            scores = scores.slice(0, 10);
+            localStorage.setItem('neon_highscores', JSON.stringify(scores));
+        };
+
         console.log('[Neon Highway] platform enhancements loaded', game.platformInfo);
     }
 
