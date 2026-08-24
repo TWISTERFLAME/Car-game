@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neon Highway: Traffic Racer 3D</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d021a">
+    <!-- Offline Fallback Script tags -->
+    <script src="three.min.js"></script>
+    <script src="peerjs.min.js"></script>
+</head>
+<body>
+    <!-- Main UI Container -->
+    <div id="game-ui">
+        
+        <!-- MAIN MENU -->
+        <div id="main-menu" class="menu-panel active">
+            <h1 class="game-title">NEON HIGHWAY</h1>
+            <p class="game-subtitle">3D Traffic Racer</p>
+
+            <div class="currency-display">
+                <span class="coin-icon">🪙</span> <span id="menu-coins">0</span> COINS
+            </div>
+
+            <div class="menu-buttons">
+                <button id="btn-single" class="btn btn-primary">1 PLAYER (ENDLESS)</button>
+                <button id="btn-split" class="btn btn-secondary">2 PLAYER (SPLIT-SCREEN)</button>
+                <button id="btn-online" class="btn btn-accent">ONLINE MULTIPLAYER</button>
+                <button id="btn-garage" class="btn">GARAGE & UPGRADES</button>
+                <button id="btn-leaderboard" class="btn">LEADERBOARDS</button>
+                <button id="btn-settings" class="btn">SETTINGS</button>
+            </div>
+            
+            <div class="missions-preview">
+                <h3>ACTIVE MISSION</h3>
+                <p id="menu-mission-desc">Loading mission...</p>
+                <div class="progress-bar-container">
+                    <div id="menu-mission-progress" class="progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS PANEL -->
+        <div id="settings-menu" class="menu-panel">
+            <h2>SETTINGS</h2>
+            <div class="settings-group">
+                <div class="setting-row">
+                    <label>Sound Effects</label>
+                    <input type="checkbox" id="setting-sfx" checked>
+                </div>
+                <div class="setting-row">
+                    <label>Retro Synth Music</label>
+                    <input type="checkbox" id="setting-music" checked>
+                </div>
+                <div class="setting-row">
+                    <label>Shadows (Graphics)</label>
+                    <input type="checkbox" id="setting-shadows" checked>
+                </div>
+            </div>
+            <button id="btn-settings-back" class="btn">BACK TO MENU</button>
+        </div>
+
+        <!-- LEADERBOARDS PANEL -->
+        <div id="leaderboard-menu" class="menu-panel">
+            <h2>LEADERBOARDS</h2>
+            <div class="leaderboard-tabs">
+                <button id="tab-local" class="tab-btn active">LOCAL HIGH SCORES</button>
+                <button id="tab-online" class="tab-btn">ONLINE TOP PLAYERS</button>
+            </div>
+            <div class="leaderboard-content">
+                <table id="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>RANK</th>
+                            <th>NAME</th>
+                            <th>SCORE</th>
+                            <th>MAP</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboard-tbody">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+            <button id="btn-leaderboard-back" class="btn">BACK TO MENU</button>
+        </div>
+
+        <!-- GARAGE & CUSTOMIZATION -->
+        <div id="garage-menu" class="menu-panel">
+            <h2>GARAGE</h2>
+            <div class="currency-display">
+                <span class="coin-icon">🪙</span> <span id="garage-coins">0</span> COINS
+            </div>
+
+            <div class="garage-container">
+                <!-- Car Selector Carousel -->
+                <div class="car-carousel">
+                    <button id="car-prev" class="carousel-nav">&lt;</button>
+                    <div class="car-preview-info">
+                        <h3 id="car-name">SPORTS CAR</h3>
+                        <p id="car-price">UNLOCKED</p>
+                    </div>
+                    <button id="car-next" class="carousel-nav">&gt;</button>
+                </div>
+
+                <!-- Stats Visualizers -->
+                <div class="car-stats">
+                    <div class="stat-row">
+                        <label>TOP SPEED</label>
+                        <div class="stat-bar"><div id="stat-speed" class="stat-fill" style="width: 50%"></div></div>
+                        <button id="btn-upgrade-speed" class="btn btn-sm btn-upgrade">UPGRADE (+10%) <span class="upgrade-cost">🪙 200</span></button>
+                    </div>
+                    <div class="stat-row">
+                        <label>HANDLING</label>
+                        <div class="stat-bar"><div id="stat-handling" class="stat-fill" style="width: 50%"></div></div>
+                        <button id="btn-upgrade-handling" class="btn btn-sm btn-upgrade">UPGRADE (+10%) <span class="upgrade-cost">🪙 200</span></button>
+                    </div>
+                    <div class="stat-row">
+                        <label>BRAKES</label>
+                        <div class="stat-bar"><div id="stat-brakes" class="stat-fill" style="width: 50%"></div></div>
+                        <button id="btn-upgrade-brakes" class="btn btn-sm btn-upgrade">UPGRADE (+10%) <span class="upgrade-cost">🪙 150</span></button>
+                    </div>
+                </div>
+
+                <!-- Customization (Paint Color Picker) -->
+                <div class="customization-controls">
+                    <h3>CUSTOM PAINT</h3>
+                    <div class="color-options">
+                        <button class="color-btn" style="background-color: #ff0055;" data-color="#ff0055"></button>
+                        <button class="color-btn" style="background-color: #00ffcc;" data-color="#00ffcc"></button>
+                        <button class="color-btn" style="background-color: #ffe600;" data-color="#ffe600"></button>
+                        <button class="color-btn" style="background-color: #a000ff;" data-color="#a000ff"></button>
+                        <button class="color-btn" style="background-color: #ffffff;" data-color="#ffffff"></button>
+                        <button class="color-btn" style="background-color: #333333;" data-color="#333333"></button>
+                        <input type="color" id="paint-color-custom" title="Custom color picker">
+                    </div>
+                </div>
+            </div>
+
+            <div class="garage-footer">
+                <button id="btn-unlock-car" class="btn btn-accent" style="display: none;">UNLOCK CAR</button>
+                <button id="btn-select-car" class="btn btn-primary">SELECT VEHICLE</button>
+                <button id="btn-garage-back" class="btn">BACK TO MENU</button>
+            </div>
+        </div>
+
+        <!-- ENVIRONMENT / MAP SELECT -->
+        <div id="env-menu" class="menu-panel">
+            <h2>SELECT ENVIRONMENT</h2>
+            
+            <div class="env-options">
+                <div class="env-card active" data-map="highway">
+                    <div class="env-thumbnail highway-thumb">🛣️</div>
+                    <h3>SUNNY HIGHWAY</h3>
+                    <p>Clear skies, steady grip, medium traffic.</p>
+                </div>
+                <div class="env-card" data-map="city">
+                    <div class="env-thumbnail city-thumb">🌃</div>
+                    <h3>NEON CITY (NIGHT)</h3>
+                    <p>Skyscrapers, glowing lanes, dense traffic.</p>
+                </div>
+                <div class="env-card" data-map="mountain">
+                    <div class="env-thumbnail mountain-thumb">🏔️</div>
+                    <h3>SNOWY MOUNTAIN</h3>
+                    <p>Thick fog, sliding curves, hazardous icy roads.</p>
+                </div>
+                <div class="env-card" data-map="desert">
+                    <div class="env-thumbnail desert-thumb">🌵</div>
+                    <h3>DESERT CANYON</h3>
+                    <p>Sunset skies, cacti, high winds, super long straightaways.</p>
+                </div>
+            </div>
+
+            <div class="setting-selection">
+                <h3>WEATHER / CYCLE</h3>
+                <div class="weather-options">
+                    <button class="weather-btn active" data-weather="clear">☀️ CLEAR</button>
+                    <button class="weather-btn" data-weather="rainy">🌧️ RAINY</button>
+                    <button class="weather-btn" data-weather="snowy">❄️ SNOWY</button>
+                    <button class="weather-btn" data-weather="night">🌙 NIGHT</button>
+                </div>
+            </div>
+
+            <div class="env-footer">
+                <button id="btn-env-start" class="btn btn-primary">START RACE</button>
+                <button id="btn-env-back" class="btn">BACK</button>
+            </div>
+        </div>
+
+        <!-- ONLINE MULTIPLAYER MENU -->
+        <div id="online-menu" class="menu-panel">
+            <h2>ONLINE MULTIPLAYER</h2>
+            <p class="network-status" id="net-status">Disconnected</p>
+
+            <div class="online-sections">
+                <div class="online-card">
+                    <h3>QUICK MATCH</h3>
+                    <p>Search for any online player and race instantly.</p>
+                    <button id="btn-quick-match" class="btn btn-accent">FIND MATCH</button>
+                </div>
+
+                <div class="online-card">
+                    <h3>PRIVATE ROOM</h3>
+                    <p>Create a game room and invite a friend using a code.</p>
+                    <button id="btn-create-room" class="btn btn-primary">CREATE ROOM</button>
+                </div>
+
+                <div class="online-card">
+                    <h3>JOIN ROOM</h3>
+                    <p>Enter your friend's room code to join their game.</p>
+                    <input type="text" id="room-code-input" placeholder="ROOM CODE (4 letters)" maxlength="4">
+                    <button id="btn-join-room" class="btn btn-secondary">JOIN ROOM</button>
+                </div>
+            </div>
+
+            <button id="btn-online-back" class="btn">BACK TO MENU</button>
+        </div>
+
+        <!-- ONLINE MATCHMAKING LOBBY -->
+        <div id="online-lobby" class="menu-panel">
+            <h2 id="lobby-title">CREATING ROOM...</h2>
+            
+            <div class="lobby-box">
+                <div class="room-info">
+                    <p>ROOM CODE:</p>
+                    <div id="lobby-room-code" class="room-code-display">----</div>
+                    <p class="room-instructions">Send this code to your friend to join!</p>
+                </div>
+
+                <div class="lobby-players">
+                    <div class="player-slot host-slot">
+                        <span class="player-avatar">🚗</span>
+                        <span id="lobby-player-host" class="player-name">Player 1 (You)</span>
+                        <span class="player-status-badge ready">READY</span>
+                    </div>
+                    <div class="player-slot guest-slot">
+                        <span class="player-avatar">🚙</span>
+                        <span id="lobby-player-guest" class="player-name">Waiting for Player 2...</span>
+                        <span id="lobby-guest-badge" class="player-status-badge waiting">WAITING</span>
+                    </div>
+                </div>
+
+                <div class="lobby-settings">
+                    <h3>GAME SETTINGS (HOST ONLY)</h3>
+                    <p id="lobby-selected-map">Map: Sunny Highway</p>
+                    <p id="lobby-selected-weather">Weather: Clear</p>
+                    <button id="btn-lobby-change-settings" class="btn btn-sm">CHANGE MAP</button>
+                </div>
+            </div>
+
+            <div class="lobby-actions">
+                <button id="btn-lobby-start" class="btn btn-accent" disabled>START GAME</button>
+                <button id="btn-lobby-leave" class="btn">LEAVE LOBBY</button>
+            </div>
+        </div>
+
+        <!-- IN-GAME HEADS-UP DISPLAY (HUD) -->
+        <!-- Single Player HUD -->
+        <div id="hud-single" class="hud-container">
+            <div class="hud-top">
+                <div class="hud-item score-container">
+                    <span class="hud-label">SCORE</span>
+                    <span id="hud-score" class="hud-value">000000</span>
+                </div>
+                <div class="hud-item distance-container">
+                    <span class="hud-label">DISTANCE</span>
+                    <span id="hud-dist" class="hud-value">0 m</span>
+                </div>
+                <div class="hud-item coin-container">
+                    <span class="hud-label">CASH</span>
+                    <span id="hud-coins" class="hud-value">🪙 0</span>
+                </div>
+            </div>
+            
+            <div class="hud-mission-alert" id="hud-mission-alert">
+                <span class="hud-label">MISSION:</span> <span id="hud-mission-desc">Drive 1000m</span>
+            </div>
+
+            <div class="hud-bottom">
+                <div class="hud-item speed-container">
+                    <span id="hud-speed" class="hud-value">0</span>
+                    <span class="hud-unit">KM/H</span>
+                </div>
+                <div class="hud-item nitro-container">
+                    <span class="hud-label">NITRO</span>
+                    <div class="hud-nitro-bar"><div id="hud-nitro-fill" class="hud-nitro-fill"></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Split Screen / Multiplayer HUD -->
+        <div id="hud-split" class="hud-container split-hud">
+            <!-- Left Side Player 1 HUD -->
+            <div class="hud-half left-half">
+                <div class="hud-half-top">
+                    <div>P1 SCORE: <span id="hud-p1-score">0</span></div>
+                    <div>CASH: 🪙 <span id="hud-p1-coins">0</span></div>
+                </div>
+                <div class="hud-half-bottom">
+                    <div class="hud-speed-sm"><span id="hud-p1-speed">0</span> KM/H</div>
+                    <div class="hud-nitro-sm">NITRO <div class="hud-nitro-bar-sm"><div id="hud-p1-nitro" class="hud-nitro-fill-sm"></div></div></div>
+                </div>
+            </div>
+
+            <!-- Right Side Player 2 HUD -->
+            <div class="hud-half right-half">
+                <div class="hud-half-top">
+                    <div>P2 SCORE: <span id="hud-p2-score">0</span></div>
+                    <div id="p2-connection-status">P2 COINS: 🪙 <span id="hud-p2-coins">0</span></div>
+                </div>
+                <div class="hud-half-bottom">
+                    <div class="hud-speed-sm"><span id="hud-p2-speed">0</span> KM/H</div>
+                    <div class="hud-nitro-sm">NITRO <div class="hud-nitro-bar-sm"><div id="hud-p2-nitro" class="hud-nitro-fill-sm"></div></div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GAME OVER SCREEN -->
+        <div id="game-over-screen" class="menu-panel">
+            <h1 class="game-over-title">CRASHED!</h1>
+            
+            <div class="stats-summary">
+                <div class="summary-row">
+                    <span>Final Score</span>
+                    <span id="go-score" class="summary-val">0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Distance Traveled</span>
+                    <span id="go-distance" class="summary-val">0 m</span>
+                </div>
+                <div class="summary-row">
+                    <span>Max Speed</span>
+                    <span id="go-maxspeed" class="summary-val">0 km/h</span>
+                </div>
+                <div class="summary-row">
+                    <span>Close Overtakes</span>
+                    <span id="go-overtakes" class="summary-val">0</span>
+                </div>
+                <div class="summary-row highlight">
+                    <span>Coins Earned</span>
+                    <span id="go-coins" class="summary-val">🪙 0</span>
+                </div>
+            </div>
+
+            <div class="mission-status-box" id="go-mission-box">
+                <h3>MISSION COMPLETED!</h3>
+                <p id="go-mission-desc">Drive 1000m without crashing</p>
+                <p class="mission-reward">+ 🪙 100 BONUS</p>
+            </div>
+
+            <div class="menu-buttons">
+                <button id="btn-restart" class="btn btn-primary">PLAY AGAIN</button>
+                <button id="btn-go-garage" class="btn btn-secondary">UPGRADE CAR</button>
+                <button id="btn-go-menu" class="btn">MAIN MENU</button>
+            </div>
+        </div>
+
+        <!-- MOBILE TOUCH CONTROLS OVERLAYS -->
+        <!-- P1 Controls (Single Player & P1 Split) -->
+        <div id="touch-controls-p1" class="touch-overlay">
+            <div class="touch-steering">
+                <button id="touch-p1-left" class="touch-btn steering-btn">◀</button>
+                <button id="touch-p1-right" class="touch-btn steering-btn">▶</button>
+            </div>
+            <div class="touch-pedals">
+                <button id="touch-p1-horn" class="touch-btn utility-btn">📢</button>
+                <button id="touch-p1-nitro" class="touch-btn utility-btn nitro-btn">🔥</button>
+                <button id="touch-p1-brake" class="touch-btn brake-btn">BRAKE</button>
+                <button id="touch-p1-gas" class="touch-btn gas-btn">GAS</button>
+            </div>
+        </div>
+
+        <!-- P2 Controls (Split Screen P2) -->
+        <div id="touch-controls-p2" class="touch-overlay">
+            <div class="touch-steering">
+                <button id="touch-p2-left" class="touch-btn steering-btn">◀</button>
+                <button id="touch-p2-right" class="touch-btn steering-btn">▶</button>
+            </div>
+            <div class="touch-pedals">
+                <button id="touch-p2-horn" class="touch-btn utility-btn">📢</button>
+                <button id="touch-p2-nitro" class="touch-btn utility-btn nitro-btn">🔥</button>
+                <button id="touch-p2-brake" class="touch-btn brake-btn">BRAKE</button>
+                <button id="touch-p2-gas" class="touch-btn gas-btn">GAS</button>
+            </div>
+        </div>
+
+        <!-- SCREEN LOADER / NOTIFICATION toast -->
+        <div id="game-toast" class="toast">Connected!</div>
+        <div id="screen-loader" class="loader-overlay">
+            <div class="loader-spinner"></div>
+            <div id="loader-text">Loading Assets...</div>
+        </div>
+    </div>
+
+    <!-- WebGL Canvas Anchor -->
+    <div id="canvas-container"></div>
+
+    <!-- Gameplay Scripts -->
+    <script src="audio.js"></script>
+    <script src="models.js"></script>
+    <script src="online.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
